@@ -55,7 +55,7 @@ class Warranty_controller extends Module_controller
             die('Authenticate first.'); // Todo: return json?
         }
 
-        require_once(conf('application_path') . "helpers/warranty_helper.php");
+        require_once(__DIR__ . "/helpers/warranty_helper.php");
         $out = array('date' => estimate_manufactured_date($serial_number));
         $obj = new View();
         $obj->view('json', array('msg' => $out));
