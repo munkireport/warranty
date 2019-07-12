@@ -21,14 +21,23 @@ function check_warranty_status(&$warranty_model)
         $warranty_model->status = "Virtual Machine";
 
         // Use reg_timestamp as purchase_date
-        $report = new Reportdata_model($warranty_model->serial_number);
-        $warranty_model->purchase_date = date('Y-m-d', $report->reg_timestamp);
+        try {
+            $report = Reportdata_model::where('serial_number', $warranty_model->serial_number)
+            ->firstOrFail();
+        } catch (\Throwable $th) {
+            return;
+        }
+        $warranty_model->purchase_date = date('Y-m-d', $report['reg_timestamp']);
         $warranty_model->end_date = date('Y-m-d', strtotime('+10 year'));
         
-        $machine = new Machine_model($warranty_model->serial_number);
-        //$machine->img_url = $matches[1]; Todo: get image url for VM
-        $machine->machine_desc = 'VMware virtual machine';
-        $machine->save();
+        Machine_model::updateOrCreate(
+            ['serial_number' => $warranty_model->serial_number],
+            [
+                'serial_number' => $warranty_model->serial_number,
+                'machine_desc' => 'VMware virtual machine',
+            ]
+        );
+
         return;
     }
 
@@ -52,12 +61,23 @@ function check_warranty_status(&$warranty_model)
 
 
     // Get machine model from apple (only when not set or failed)
-    $machine = new Machine_model($warranty_model->serial_number);
-    model_description_lookup($warranty_model->serial_number);
+    try {
+        $machine = Machine_model::select('machine_desc')
+        ->where('serial_number', $warranty_model->serial_number)
+        ->firstOrFail();
+    } catch (\Throwable $th) {
+        return;
+    }
+    // dd(model_description_lookup($warranty_model->serial_number));
     $lookup_failed = array('model_lookup_failed', 'unknown_model');
-    if (! $machine->machine_desc or in_array($machine->machine_desc, $lookup_failed)) {
-        $machine->machine_desc = model_description_lookup($warranty_model->serial_number);
-        $machine->save();
+    if (! $machine or ! $machine['machine_desc'] or in_array($machine['machine_desc'], $lookup_failed)) {
+        Machine_model::updateOrCreate(
+            ['serial_number' => $warranty_model->serial_number],
+            [
+                'serial_number' => $warranty_model->serial_number,
+                'machine_desc' => model_description_lookup($warranty_model->serial_number),
+            ]
+        );
     }
 
     return $error;
