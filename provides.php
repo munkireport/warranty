@@ -1,6 +1,9 @@
 <?php
 
 return array(
+    'detail_widgets' => [
+        'warranty_detail' => ['view' => 'warranty_detail_widget'],
+    ],
     'listings' => array(
         'warranty' => array('view' => 'warranty_listing', 'i18n' => 'warranty.warranty'),
     ),
