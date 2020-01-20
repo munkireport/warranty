@@ -104,6 +104,9 @@ class Warranty_model extends \Model
         if (! in_array("gsx", conf('modules'))) {
             alert("warranty: current status: $this->status");
 
+            // Load warranty helper
+            require_once(__DIR__ . '/helpers/warranty_helper.php');
+
             switch ($this->status) {
                 case 'Supported':
                     // If not expired, return;
@@ -132,7 +135,7 @@ class Warranty_model extends \Model
                     // Unknown status
                     alert('warranty: unknown status: '.$this->status, 'warning');
             }
-            $this->check_status($force = true);
+            //$this->check_status($force = true);
 
             alert(sprintf("warranty: new status: %s", $this->status));
        }

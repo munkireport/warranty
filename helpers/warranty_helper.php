@@ -1,7 +1,5 @@
 <?php
 
-use munkireport\lib\Request;
-
 /**
  * Unfortunately we have to scrape the page as Apple discontinued the json api
  *
@@ -29,14 +27,6 @@ function check_warranty_status(&$warranty_model)
         }
         $warranty_model->purchase_date = date('Y-m-d', $report['reg_timestamp']);
         $warranty_model->end_date = date('Y-m-d', strtotime('+10 year'));
-        
-        Machine_model::updateOrCreate(
-            ['serial_number' => $warranty_model->serial_number],
-            [
-                'serial_number' => $warranty_model->serial_number,
-                'machine_desc' => 'VMware virtual machine',
-            ]
-        );
 
         return;
     }
@@ -59,26 +49,6 @@ function check_warranty_status(&$warranty_model)
         $warranty_model->end_date = date('Y-m-d', strtotime($max_applecare_years, $purchase_time));
     }
 
-
-    // Get machine model from apple (only when not set or failed)
-    try {
-        $machine = Machine_model::select('machine_desc')
-        ->where('serial_number', $warranty_model->serial_number)
-        ->firstOrFail();
-    } catch (\Throwable $th) {
-        return;
-    }
-    // dd(model_description_lookup($warranty_model->serial_number));
-    $lookup_failed = array('model_lookup_failed', 'unknown_model');
-    if (! $machine or ! $machine['machine_desc'] or in_array($machine['machine_desc'], $lookup_failed)) {
-        Machine_model::updateOrCreate(
-            ['serial_number' => $warranty_model->serial_number],
-            [
-                'serial_number' => $warranty_model->serial_number,
-                'machine_desc' => model_description_lookup($warranty_model->serial_number),
-            ]
-        );
-    }
 
     return $error;
 }
@@ -119,38 +89,4 @@ function formatted_manufactured_date($year, $week)
 {
     $strtime = sprintf('%sW%02s1', $year, $week);
     return date('Y-m-d', strtotime($strtime));
-}
-
-function model_description_lookup($serial)
-{
-    if (strpos($serial, 'VMWV') === 0) {
-        return 'VMware virtual machine';
-    }
-
-    $options = [
-        'query' => [
-            'page' => 'categorydata',
-            'serialnumber' => $serial
-        ]
-    ];
-
-    $client = new Request();
-    $result = $client->get('http://km.support.apple.com/kb/index', $options);
-
-    if ( ! $result) {
-        return 'model_lookup_failed';
-    }
-
-    try {
-        $categorydata = json_decode($result);
-        if(isset($categorydata->name)){
-            return $categorydata->name;
-        }
-        else{
-            return 'unknown_model';
-        }
-    } catch (Exception $e) {
-        return 'model_lookup_failed';
-    }
-
 }
