@@ -17,8 +17,44 @@
 $(document).on('appReady', function(e, lang) {
     // Get estimate_manufactured_date
     $.getJSON( appUrl + '/module/warranty/estimate_manufactured_date/' + serialNumber, function( data ) {
-            $('.mr-manufacture_date').html(data.date)
-	});
+            $('.mr-manufacture_date').text(data.date)
+    });
+
+    $.getJSON( appUrl + '/module/warranty/report/' + serialNumber, function( data ) {
+
+        $('.mr-purchase_date').text(data.purchase_date);
+
+    	// Warranty status
+        var cls = 'text-danger',
+        msg = data.status
+		switch (data.status) {
+			case 'Supported':
+				cls = 'text-success';
+				msg = i18n.t("warranty.supported_until", {date:data.end_date});
+				break;
+			case 'No Applecare':
+				cls = 'text-warning';
+				msg = i18n.t("warranty.supported_no_applecare", {date:data.end_date});
+				break;
+			case 'Unregistered serialnumber':
+				cls = 'text-warning';
+				msg = i18n.t("warranty.unregistered");
+				msg = msg + ' <a target="_blank" href="https://selfsolve.apple.com/RegisterProduct.do?productRegister=Y&amp;country=USA&amp;id='+data.serialNumber+'">Register</a>'
+				break;
+			case 'Expired':
+				cls = 'text-danger';
+				msg = i18n.t("warranty.expired", {date:data.end_date});
+				break;
+			default:
+				msg = data.status;
+		}
+
+
+        $('.mr-warranty_status').addClass(cls).text(msg);
+    });
+
+    
+
 });
 </script>
 

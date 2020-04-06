@@ -21,6 +21,15 @@ class Warranty_controller extends Module_controller
         echo "You've loaded the warranty module!";
     }
 
+    public function report($serial_number = '')
+    {
+        if( ! authorized_for_serial($serial_number)){
+            jsonError('Not authorized');
+        }
+        $warranty = new Warranty_model($serial_number);
+        jsonView($warranty->rs);
+    }
+
     /**
      * Force recheck warranty
      *
