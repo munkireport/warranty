@@ -1,0 +1,13 @@
+i18n_title: warranty.report
+js_link: module/warranty/js/warranty
+table:
+  - column: machine.computer_name
+    i18n_header: listing.computername
+    formatter: clientDetail
+    tab_link: munkireportinfo-tab
+  - column: reportdata.serial_number
+    i18n_header: serial
+  - {i18n_header: username, column: reportdata.long_username}
+  - {i18n_header: warranty.status, column: warranty.status, formatter: warrantyStatusFormat}
+  - {i18n_header: warranty.purchased, column: warranty.purchase_date, formatter: dateToMoment}
+  - {i18n_header: warranty.expires, column: warranty.end_date, formatter: dateToMoment}

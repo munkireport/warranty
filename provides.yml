@@ -1,0 +1,8 @@
+detail_widgets:
+    warranty_detail: { view: warranty_detail_widget }
+listings:
+    warranty: { view: warranty_listing, i18n: warranty.warranty }
+widgets:
+    hardware_age: { view: hardware_age_widget }
+    hardware_warranty: { view: hardware_warranty_widget }
+    warranty: { view: warranty_widget }

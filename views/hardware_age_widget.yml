@@ -1,0 +1,7 @@
+type: bargraph
+widget_id: ware-age-widge
+api_url: /module/warranty/age
+i18n_title: warranty.age
+icon: fa-clock-o
+label_modifier: label + ' ' + i18n.t('date.year')
+listing_link: /show/listing/warranty/warranty
