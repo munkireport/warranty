@@ -7,4 +7,4 @@ widgets:
     hardware_warranty: { view: hardware_warranty_widget }
     warranty: { view: warranty_widget }
 admin_pages:
-    admin: { i18n: warranty.warranty }
+    admin: { i18n: warranty.update_info }

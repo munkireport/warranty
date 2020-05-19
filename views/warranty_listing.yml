@@ -4,7 +4,6 @@ table:
   - column: machine.computer_name
     i18n_header: listing.computername
     formatter: clientDetail
-    tab_link: munkireportinfo-tab
   - column: reportdata.serial_number
     i18n_header: serial
   - {i18n_header: username, column: reportdata.long_username}

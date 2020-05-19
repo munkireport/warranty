@@ -39,7 +39,6 @@ $(document).on('appReady', function(e, lang) {
 			case 'Unregistered serialnumber':
 				cls = 'text-warning';
 				msg = i18n.t("warranty.unregistered");
-				msg = msg + ' <a target="_blank" href="https://selfsolve.apple.com/RegisterProduct.do?productRegister=Y&amp;country=USA&amp;id='+data.serialNumber+'">Register</a>'
 				break;
 			case 'Expired':
 				cls = 'text-danger';

@@ -22,11 +22,12 @@
             
             <?php endif?>
 
-            <p class="help-block">CSV file format (you also need the header): 
+            <p class="help-block">CSV file format (header required): 
                         <pre>
 "serial_number","purchase_date","end_date"
 "3X6RHPJ3P7QM","2016-06-09","2020-06-09"
-                        </pre>
+"CLJW1VCQMD6N","2020-04-14","2024-04-14"
+"8WSF8O4BHDNK","2019-10-18","2023-10-18"</pre>
                     </p>
 
             <form action="" method="post" enctype="multipart/form-data">

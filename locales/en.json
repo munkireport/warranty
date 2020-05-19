@@ -16,6 +16,7 @@
     "supported_no_applecare": "Supported until __date__. No Applecare",
     "supported_until": "Supported until __date__",
     "unregistered": "Unregistered",
+    "update_info": "Update warranty information",
     "warranty": "Warranty",
     "warrantysupport": {
         "title": "Counts Supported, Vintage, Obsolete, and Unknown support status",
