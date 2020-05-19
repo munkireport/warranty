@@ -1,0 +1,8 @@
+type: scrollbox
+widget_id: warranty-widget
+api_url: /module/warranty/get_machines_expiring_next_month
+i18n_title: warranty.expiring_next_month
+icon: fa-umbrella
+listing_link: /show/listing/warranty/warranty
+search_key: computer_name
+badge: status
