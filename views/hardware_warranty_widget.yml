@@ -5,3 +5,4 @@ i18n_title: warranty.widget_title
 icon: fa-umbrella
 listing_link: /show/listing/warranty/warranty
 search_key: status
+badge: count
