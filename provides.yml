@@ -6,3 +6,5 @@ widgets:
     hardware_age: { view: hardware_age_widget }
     hardware_warranty: { view: hardware_warranty_widget }
     warranty: { view: warranty_widget }
+admin_pages:
+    admin: { i18n: warranty.warranty }

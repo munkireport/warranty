@@ -14,6 +14,24 @@ class Warranty_controller extends Module_controller
         $this->module_path = dirname(__FILE__);
     }
 
+    public function admin()
+    {        
+        require $this->module_path . '/warranty_upload.php';
+        $uploader = new Warranty_upload;
+        view('admin_form', ['result' => $uploader->handleUpload()], $this->module_path . '/views/');
+    }
+
+    public function update_status()
+    {
+        jsonView(
+            [
+                'updated' => Warranty_model::where('end_date', '<', date('Y-m-d'))
+                    ->where('warranty.status', '!=', 'Expired')
+                    ->update(['warranty.status' => 'Expired'])
+            ]
+        );
+    }
+
     public function report($serial_number = '')
     {
         jsonView(
@@ -56,6 +74,27 @@ class Warranty_controller extends Module_controller
                 ->groupBy('warranty.status')
                 ->orderBy('count', 'desc')
                 ->get()
+        );
+    }
+
+        
+    /**
+     * Get Warranty statistics
+     *
+     * @param bool $alert Filter on 30 days
+     **/
+    public function get_machines_expiring_next_month()
+    {
+        $between = [date('Y-m-d'), date('Y-m-d', strtotime('+30days'))];
+
+        jsonView(
+            Warranty_model::selectRaw('machine.computer_name, warranty.status')
+                ->whereBetween('end_date', $between)
+                ->join('machine', 'machine.serial_number', '=', 'warranty.serial_number')    
+                ->filter()
+                ->orderBy('end_date', 'desc')
+                ->get()
+                ->toArray()
         );
     }
 
