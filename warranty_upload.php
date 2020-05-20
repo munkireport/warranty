@@ -44,18 +44,24 @@ class Warranty_upload
         if( ! isset($entry['end_date'])){
             return false;
         }
+        if( ! Reportdata_model::where('serial_number', $entry['serial_number'])->first()){
+            return false;
+        }
+
         return true;
     }
 
     private function _updateEntry($entry)
     {
-        return Warranty_model::where('warranty.serial_number', $entry['serial_number'])
-                ->where('purchase_date', '!=', $entry['purchase_date'])
-                ->where('end_date', '!=', $entry['end_date'])
-                ->update([
-                    'purchase_date' => $entry['purchase_date'],
-                    'end_date' => $entry['end_date'],
-                ]);
+        $warranty = Warranty_model::firstOrNew(['serial_number' => $entry['serial_number']]);
+        $warranty->purchase_date = $entry['purchase_date'];
+        $warranty->end_date = $entry['end_date'];
+        $warranty->status = $entry['end_date'] >= date('Y-m-d') ? 'Supported' : 'Expired';
+        if($warranty->isDirty()){
+            $warranty->save();
+            return true;
+        }
+        return false;
     }
 
     private function _convertFileToCsv($file)
