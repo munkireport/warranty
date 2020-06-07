@@ -110,7 +110,11 @@ class Warranty_controller extends Module_controller
 
         $now = date_create();
         foreach(Warranty_model::select('purchase_date')->filter()->get()->toArray() as $item){
-            if($interval = date_diff($now, date_create($item['purchase_date']))){
+            // Check if purchase date is valid
+            if( ! $purchase_date = date_create($item['purchase_date'])){
+                continue;
+            }
+            if($interval = date_diff($now, $purchase_date)){
                 $age = (int) $interval->format('%y');
                 $ages[$age] = $ages[$age] ?? 0;
                 $ages[$age]++;
