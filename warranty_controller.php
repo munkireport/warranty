@@ -18,7 +18,8 @@ class Warranty_controller extends Module_controller
     {        
         require $this->module_path . '/warranty_upload.php';
         $uploader = new Warranty_upload;
-        view('admin_form', ['result' => $uploader->handleUpload()], $this->module_path . '/views/');
+        $obj = new View();
+        $obj->view('admin_form', ['result' => $uploader->handleUpload()], $this->module_path . '/views/');
     }
 
     public function update_status()
