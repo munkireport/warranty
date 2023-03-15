@@ -108,6 +108,7 @@ class Warranty_controller extends Module_controller
     {
 
         $ages = [];
+        $out = [];
 
         $now = date_create();
         foreach(Warranty_model::select('purchase_date')->filter()->get()->toArray() as $item){
