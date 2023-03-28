@@ -1,0 +1,92 @@
+#!/usr/local/munkireport/munkireport-python3
+
+import os
+import subprocess
+import sys
+import glob
+import time
+
+sys.path.insert(0, '/usr/local/munki')
+sys.path.insert(0, '/usr/local/munkireport')
+
+from munkilib import FoundationPlist
+
+def get_warranty_plist():
+
+    plists = glob.glob('/Users/*/Library/Application Support/com.apple.NewDeviceOutreach/Warranty.plist')
+
+    # Check if we have data
+    if len(plists) == 0:
+        return ""
+
+    latest_plist = max(plists, key=os.path.getctime)
+    return latest_plist
+
+def process_warranty(warranty_plist):
+
+    pl = FoundationPlist.readPlist(warranty_plist)
+    out = {}
+    for item in pl:
+        out['prefpath'] = warranty_plist.replace("/Library/Application Support/com.apple.NewDeviceOutreach/Warranty.plist", "").replace("/Users/", "")
+        if item == 'coverageEndDate':
+            out['coverage_end_date'] = str(pl[item])
+        elif item == 'coverageLocalizedDesc':
+            out['status'] = pl[item].replace("+", "")
+        elif item == 'covered':
+            out['covered'] = to_bool(pl[item])
+        elif item == 'coverageTypeCode':
+            out['coverage_type_code'] = pl[item]
+
+    # Set Limited Warranty or AppleCare
+    if "coverage_type_code" in out and out['coverage_type_code'] == "LI" and "status" in out and "AppleCare" not in out['status']:
+        out['status'] = "Limited Warranty"
+
+    # Check if our coverage has expired
+    if "covered" in out and out['covered'] == 0:
+        out['status'] = "Expired"
+
+    return out
+
+def get_icloud_state():
+
+    # We're checking for an iCloud log in because Apple requires this for automated on Mac warranty lookups
+    plists = glob.glob('/Users/*/Library/Preferences/MobileMeAccounts.plist')
+
+    # Check if we have data
+    if len(plists) == 0:
+        return 0
+
+    for plist in plists:
+        pl = FoundationPlist.readPlist(plist)
+        for account in pl["Accounts"]:
+            for item in account:
+                if item == 'LoggedIn' and account[item] == True:
+                    return to_bool(account[item])
+    return 0
+
+def to_bool(s):
+    if s == True:
+        return 1
+    else:
+        return 0
+
+
+def main():
+    """Main"""
+
+    result = dict()
+
+    # Get the latest warranty plist
+    warranty_plist = get_warranty_plist()
+    if warranty_plist != "":
+        result = process_warranty(warranty_plist)
+
+    result["icloud_logged_in"] = get_icloud_state()
+
+    # Write warranty result to cache
+    cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
+    output_plist = os.path.join(cachedir, 'warranty.plist')
+    FoundationPlist.writePlist(result, output_plist)
+
+if __name__ == "__main__":
+    main()

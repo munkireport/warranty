@@ -14,6 +14,10 @@ $factory->define(Warranty_model::class, function (Faker\Generator $faker) {
         'Can\'t lookup warranty',
         'No Applecare',
         'Unregistered serialnumber',
+        'AppleCare',
+        'Limited Warranty',
       ]),
+      'est_mfg_date' => $purchase_date->format('Y-m-d'),
+      'icloud_logged_in' => $faker->boolean(),
     ];
 });

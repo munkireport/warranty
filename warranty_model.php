@@ -11,5 +11,7 @@ class Warranty_model extends Eloquent
       'purchase_date',
       'end_date',
       'status',
+      'est_mfg_date',
+      'icloud_logged_in',
     ];
 }

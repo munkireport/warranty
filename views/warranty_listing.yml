@@ -8,5 +8,7 @@ table:
     i18n_header: serial
   - {i18n_header: username, column: reportdata.long_username}
   - {i18n_header: warranty.status, column: warranty.status, formatter: warrantyStatusFormat}
-  - {i18n_header: warranty.purchased, column: warranty.purchase_date, formatter: dateToMoment}
-  - {i18n_header: warranty.expires, column: warranty.end_date, formatter: dateToMoment}
+  - {i18n_header: warranty.purchased, column: warranty.purchase_date, formatter: warrantyPurchasedDateToMoment}
+  - {i18n_header: warranty.est_manufacture_date, column: warranty.est_mfg_date, formatter: warrantyDateToMoment}
+  - {i18n_header: warranty.expires, column: warranty.end_date, formatter: warrantyCheckStatus}
+  - {i18n_header: warranty.icloud_logged_in, column: warranty.icloud_logged_in, formatter: warranty_icloud_signed_in}
