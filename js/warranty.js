@@ -71,7 +71,8 @@ var warrantyDateToMoment = function(col, row){
     var cell = $('td:eq('+col+')', row)
     var date = cell.text();
     var purchase_date_col = $('td:eq('+(col-1)+')', row);
-    var purchase_date = purchase_date_col.find("span").attr("title");
+    // var purchase_date = purchase_date_col.find("span").attr("title");
+    var purchase_date = purchase_date_col.text();
 
     // If purchase date and mfg date are the same, blank purchase date
     if (date && purchase_date && purchase_date === date){
