@@ -49,7 +49,7 @@ class Warranty_processor extends Processor
                 $mfg_date = date('Y-m-d', strtotime($strtime));
             } else if (strlen($serial_number) == 12) {
 
-                // These arrary should never change
+                // These arrarys should never change
                 $macs_2020 = array("MacBookAir9,1", "MacBookAir10,1", "MacBookPro16,3", "MacBookPro16,2", "MacBookPro17,1", "MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "iMac20,1", "iMac20,2", "iMac21,1", "iMac21,2", "Macmini9,1");
                 $macs_2010_2020 = array("MacBookAir8,2", "MacBookPro16,1", "MacBookPro16,4", "MacBookPro15,4", "MacBookPro15,2", "MacBookPro18,2", "MacBookPro18,3", "iMacPro1,1", "iMac18,1", "iMac19,1", "iMac19,2", "Macmini8,1", "MacPro7,1");
 
@@ -75,7 +75,7 @@ class Warranty_processor extends Processor
                 $est_half = strpos($year_code, $year) % 2;
                 $week_code = ' 123456789cdfghjklmnpqrtvwxy';
                 $week = strtolower(substr($serial_number, 4, 1));
-                $est_week = strpos($week_code, $week) + ($est_half * 26);            
+                $est_week = strpos($week_code, $week) + ($est_half * 26);
                 $strtime = sprintf('%sW%02s1', $est_year, $est_week);
                 $mfg_date = date('Y-m-d', strtotime($strtime));
             }
@@ -92,13 +92,16 @@ class Warranty_processor extends Processor
         $mylist["est_mfg_date"] = $mfg_date;
 
         // Generate purchase date from Limited Warranty if there is no purchase date or if purchase and mfg date are the same
-        $purchase_date = $model->getOriginal()["purchase_date"];
-        if ((is_null($purchase_date) || $purchase_date == $mfg_date) && $mylist["status"] == "Limited Warranty" && array_key_exists("end_date", $mylist) && ! is_null($mylist["end_date"])){
-            $new_purchase_date = new DateTime($mylist["end_date"].' - 1 year');
-            $mylist["purchase_date"] = $new_purchase_date->format('Y-m-d');
+        $warranty_original = $model->getOriginal();
+        if (array_key_exists("purchase_date", $warranty_original) && array_key_exists("status", $mylist)){
+            $purchase_date = $warranty_original["purchase_date"];
+            if ((is_null($purchase_date) || $purchase_date == $mfg_date) && $mylist["status"] == "Limited Warranty" && array_key_exists("end_date", $mylist) && ! is_null($mylist["end_date"])){
+                $new_purchase_date = new DateTime($mylist["end_date"].' - 1 year');
+                $mylist["purchase_date"] = $new_purchase_date->format('Y-m-d');
+            }
         }
 
         $model->fill($mylist);
-        $model->save();    
+        $model->save();
     }
 }
