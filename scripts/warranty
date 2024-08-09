@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 import glob
+import plistlib
 import time
 
 sys.path.insert(0, '/usr/local/munki')
@@ -86,6 +87,23 @@ def main():
     # Write warranty result to cache
     cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
     output_plist = os.path.join(cachedir, 'warranty.plist')
+
+    # Check if we need to do weekly re-process of warranty info
+    if os.path.isfile(output_plist):
+        with open(output_plist, 'rb') as infile:
+            cache_plist = plistlib.load(infile)
+        infile.close()
+
+        # Check if we need to add, update, or keep the timestamp of the last run
+        if "timestamp" not in cache_plist:
+            result["timestamp"] = str(int(time.time()))
+        elif "timestamp" in cache_plist and int(time.time()) > int(cache_plist['timestamp'])+604800:
+            result["timestamp"] = str(int(time.time()))
+        else:
+            result["timestamp"] = str(cache_plist['timestamp'])
+    else:
+        result["timestamp"] = str(int(time.time()))
+
     FoundationPlist.writePlist(result, output_plist)
 
 if __name__ == "__main__":

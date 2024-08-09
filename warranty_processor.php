@@ -24,6 +24,11 @@ class Warranty_processor extends Processor
 
         $model = Warranty_model::firstOrNew(['serial_number' => $this->serial_number]);
 
+        // Update the expired date if it current date is beyond the warranty end date
+        if ($model->end_date && $model->end_date < date('Y-m-d')){
+            $mylist["status"] = "Expired";
+        }
+
         // Process coverage end date
         if (array_key_exists("coverage_end_date", $mylist)) {
             $mylist["end_date"] = date('Y-m-d', $mylist["coverage_end_date"]);

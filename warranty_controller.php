@@ -193,7 +193,7 @@ class Warranty_controller extends Module_controller
             }
             $out[] = ['label' => $label, 'count' => $value];
         }
-  
+
         jsonView($out);
     }
 } // END class Warranty_module

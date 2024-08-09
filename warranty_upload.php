@@ -41,7 +41,17 @@ class Warranty_upload
         if( ! isset($entry['purchase_date'])){
             return false;
         }
+        if( ! validateDate($entry['purchase_date'], 'Y-m-d')){
+            return false;
+        }
+        if( date('Y-m-d') < $entry['purchase_date']){
+            // Can't purchase Macs with future dates
+            return false;
+        }
         if( ! isset($entry['end_date'])){
+            return false;
+        }
+        if( ! validateDate($entry['end_date'], 'Y-m-d')){
             return false;
         }
         if( ! Reportdata_model::where('serial_number', $entry['serial_number'])->first()){

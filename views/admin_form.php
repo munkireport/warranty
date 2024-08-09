@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-6">
-            <h3>Update warranty status</h3>
+            <h3>Update Warranty Status</h3>
             <p>Update warranty status of the clients</p>
             <div class="form-group">
                 <button id="update-status" class="btn btn-default">Update</button>
@@ -13,22 +13,20 @@
         </div>
 
         <div class="col-lg-6">
-            <h3>Update warranty information</h3>
+            <h3>Update Warranty Information</h3>
             <?php if($result):?>
-                
                 <div class="alert alert-success alert-dismissible" role="alert">Updated entries: <?=$result['updated']?></div>
                 <div class="alert alert-info alert-dismissible" role="alert">CSV entries: <?=$result['csv_entries']?></div>
                 <div class="alert alert-warning alert-dismissible" role="alert">Invalid entries: <?=$result['invalid']?></div>
-            
             <?php endif?>
 
             <p class="help-block">CSV file format (header required): 
-                        <pre>
+                <pre>
 "serial_number","purchase_date","end_date"
 "3X6RHPJ3P7QM","2016-06-09","2020-06-09"
 "CLJW1VCQMD6N","2020-04-14","2024-04-14"
 "8WSF8O4BHDNK","2019-10-18","2023-10-18"</pre>
-                    </p>
+            </p>
 
             <form action="" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="_token" value="<?php echo getCSRF();?>">

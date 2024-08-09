@@ -37,18 +37,18 @@ var warrantyCheckStatus = function(colNumber, row){
 
         if (warranty_status == "Virtual Machine"){
             // If Virtual Machine
-            warranty_status_col.html('<span class="label label-info">'+warranty_status+'</span>');
+            warranty_status_col.html('<span class="label label-info">'+warranty_status.charAt(0).toUpperCase() + warranty_status.slice(1)+'</span>');
             cell.text("");
         } else if (warranty_status == "Expired" || warranty_status == i18n.t('warranty.expired_listing')) {
             // If Expired
-            warranty_status_col.html('<span class="label label-danger">'+warranty_status+'</span>');
+            warranty_status_col.html('<span class="label label-danger">'+warranty_status.charAt(0).toUpperCase() + warranty_status.slice(1)+'</span>');
         } else if (end_date < current_date) {
             // Format warranty status
             warranty_status_col.html('<span class="label label-danger">'+i18n.t('warranty.expired_listing')+'</span>');
         } else if (end_date >= current_date){
             // Format warranty status
             var warranty_status_col = $('td:eq('+(colNumber-3)+')', row);
-            warranty_status_col.html('<span class="label label-success">'+warranty_status+'</span>');
+            warranty_status_col.html('<span class="label label-success">'+warranty_status.charAt(0).toUpperCase() + warranty_status.slice(1)+'</span>');
         }
 
     } else {
