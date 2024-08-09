@@ -41,7 +41,7 @@ class Warranty_upload
         if( ! isset($entry['purchase_date'])){
             return false;
         }
-        if( ! validateDate($entry['purchase_date'], 'Y-m-d')){
+        if( ! $this->_validateDate($entry['purchase_date'], 'Y-m-d')){
             return false;
         }
         if( date('Y-m-d') < $entry['purchase_date']){
@@ -51,7 +51,7 @@ class Warranty_upload
         if( ! isset($entry['end_date'])){
             return false;
         }
-        if( ! validateDate($entry['end_date'], 'Y-m-d')){
+        if( ! $this->_validateDate($entry['end_date'], 'Y-m-d')){
             return false;
         }
         if( ! Reportdata_model::where('serial_number', $entry['serial_number'])->first()){
@@ -82,5 +82,11 @@ class Warranty_upload
         });
         array_shift($csv); # remove column header
         return $csv;
+    }
+
+    private function _validateDate($date, $format = 'Y-m-d H:i:s')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
     }
 }
