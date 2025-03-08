@@ -15,7 +15,16 @@ class Warranty_controller extends Module_controller
     }
 
     public function admin()
-    {        
+    {
+        // Check if the user is authorized and has admin role
+        if (! $this->authorized()) {
+            die('Authenticate first.');
+        }
+
+        if (! $this->authorized('global')) {
+            die('You need to be admin');
+        }
+
         require $this->module_path . '/warranty_upload.php';
         $uploader = new Warranty_upload;
         $obj = new View();
