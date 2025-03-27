@@ -14,7 +14,7 @@ from munkilib import FoundationPlist
 
 def get_warranty_plist():
 
-    plists = glob.glob('/Users/*/Library/Application Support/com.apple.NewDeviceOutreach/Warranty.plist')
+    plists = glob.glob('/Users/*/Library/Application Support/com.apple.NewDeviceOutreach/*_Warranty.plist')
 
     # Check if we have data
     if len(plists) == 0:
@@ -28,7 +28,14 @@ def process_warranty(warranty_plist):
     pl = FoundationPlist.readPlist(warranty_plist)
     out = {}
     for item in pl:
-        out['prefpath'] = warranty_plist.replace("/Library/Application Support/com.apple.NewDeviceOutreach/Warranty.plist", "").replace("/Users/", "")
+        # Extract username from path by removing everything up to and including /Users/ and
+        # everything from /Library/ onwards
+        path_parts = warranty_plist.split('/Users/', 1)
+        if len(path_parts) > 1:
+            username_and_rest = path_parts[1]
+            username = username_and_rest.split('/Library/', 1)[0]
+            out['prefpath'] = username
+        
         if item == 'coverageEndDate':
             out['coverage_end_date'] = str(pl[item])
         elif item == 'coverageLocalizedDesc':
