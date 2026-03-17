@@ -15,7 +15,7 @@ class Warranty_controller extends Module_controller
     }
 
     public function admin()
-    {        
+    {
         require $this->module_path . '/warranty_upload.php';
         $uploader = new Warranty_upload;
         $obj = new View();
@@ -30,16 +30,6 @@ class Warranty_controller extends Module_controller
                     ->where('warranty.status', '!=', 'Expired')
                     ->update(['warranty.status' => 'Expired'])
             ]
-        );
-    }
-
-    public function report($serial_number = '')
-    {
-        jsonView(
-            Warranty_model::where('warranty.serial_number', $serial_number)
-                ->filter()
-                ->first()
-                ->toArray()
         );
     }
 
@@ -75,7 +65,7 @@ class Warranty_controller extends Module_controller
                 $mfg_date = date('Y-m-d', strtotime($strtime));
             } else if (strlen($serial_number) == 12) {
 
-                // These arrary should never change
+                // These arrarys should never change
                 $macs_2020 = array("MacBookAir9,1", "MacBookAir10,1", "MacBookPro16,3", "MacBookPro16,2", "MacBookPro17,1", "MacBookPro18,1", "MacBookPro18,2", "MacBookPro18,3", "MacBookPro18,4", "iMac20,1", "iMac20,2", "iMac21,1", "iMac21,2", "Macmini9,1");
                 $macs_2010_2020 = array("MacBookAir8,2", "MacBookPro16,1", "MacBookPro16,4", "MacBookPro15,4", "MacBookPro15,2", "MacBookPro18,2", "MacBookPro18,3", "iMacPro1,1", "iMac18,1", "iMac19,1", "iMac19,2", "Macmini8,1", "MacPro7,1");
 
@@ -109,7 +99,7 @@ class Warranty_controller extends Module_controller
 
         jsonView(['date' => $mfg_date]);
     }
-    
+
     /**
      * Get Warranty statistics
      *
@@ -195,5 +185,16 @@ class Warranty_controller extends Module_controller
         }
 
         jsonView($out);
+    }
+
+    // Get client detail widget data
+    public function report($serial_number = '')
+    {
+        jsonView(
+            Warranty_model::where('warranty.serial_number', $serial_number)
+                ->filter()
+                ->first()
+                ->toArray()
+        );
     }
 } // END class Warranty_module

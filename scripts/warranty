@@ -7,7 +7,6 @@ import glob
 import plistlib
 import time
 
-sys.path.insert(0, '/usr/local/munki')
 sys.path.insert(0, '/usr/local/munkireport')
 
 from munkilib import FoundationPlist
@@ -89,7 +88,8 @@ def main():
     if warranty_plist != "":
         result = process_warranty(warranty_plist)
 
-    result["icloud_logged_in"] = get_icloud_state()
+    # result["icloud_logged_in"] = get_icloud_state() # Disabled because Apple removed this key around macOS 14
+    result["icloud_logged_in"] = ""
 
     # Write warranty result to cache
     cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
