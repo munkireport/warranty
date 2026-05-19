@@ -19,8 +19,37 @@ def get_warranty_plist():
     if len(plists) == 0:
         return ""
 
-    latest_plist = max(plists, key=os.path.getctime)
+    machine_model = get_machine_model()
+
+    matched_plists = []
+
+    # Check each plist to match plist to the current Mac
+    # Not the best as Apple does not store the serial number
+    # in the plist in a usable way, so we match on machine model
+    for plist in plists:
+
+        warranty_plist_data = FoundationPlist.readPlist(plist)
+        if "deviceInfo" in warranty_plist_data and "deviceImageUrl" in warranty_plist_data["deviceInfo"]:
+            if machine_model in warranty_plist_data["deviceInfo"]["deviceImageUrl"]:
+                matched_plists.append(plist)
+
+    # Get the latest touched plist, if matched to machine model
+    if matched_plists is not []:
+        latest_plist = max(matched_plists, key=os.path.getctime)
+    else:
+        latest_plist = max(plists, key=os.path.getctime)
+
     return latest_plist
+
+def get_machine_model():
+
+    cmd = ["/usr/sbin/sysctl","-n","hw.model"]
+    proc = subprocess.Popen(cmd, shell=False, bufsize=-1,
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (output, unused_error) = proc.communicate()
+
+    return output.decode().strip()
 
 def process_warranty(warranty_plist):
 
