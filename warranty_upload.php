@@ -76,7 +76,10 @@ class Warranty_upload
 
     private function _convertFileToCsv($file)
     {
-        $csv = array_map('str_getcsv', file($file));
+        $csv = array_map(
+    		fn($line) => str_getcsv($line, ',', '"', ''),
+    		file($file)
+		);        
         array_walk($csv, function(&$a) use ($csv) {
             $a = array_combine($csv[0], $a);
         });
